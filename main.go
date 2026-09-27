@@ -4,22 +4,22 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hdt3213/godis/cluster"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/database"
-	idatabase "github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/server/gnet"
-	stdserver "github.com/hdt3213/godis/redis/server/std"
+	"github.com/bongani-m/hardhatkv/cluster"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/database"
+	idatabase "github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/server/gnet"
+	stdserver "github.com/bongani-m/hardhatkv/redis/server/std"
 )
 
 var banner = `
-   ______          ___
-  / ____/___  ____/ (_)____
- / / __/ __ \/ __  / / ___/
-/ /_/ / /_/ / /_/ / (__  )
-\____/\____/\__,_/_/____/
+ _   _               _ _           _   _  ___     __
+| | | | __ _ _ __ __| | |__   __ _| |_| |/ \ \   / /
+| |_| |/ _' | '__/ _' | '_ \ / _' | __| ' / \ \ / /
+|  _  | (_| | | | (_| | | | | (_| | |_| . \  \ V /
+|_| |_|\__,_|_|  \__,_|_| |_|\__,_|\__|_|\_\  \_/
 `
 
 var defaultProperties = &config.ServerProperties{
@@ -40,7 +40,7 @@ func main() {
 	print(banner)
 	logger.Setup(&logger.Settings{
 		Path:       "logs",
-		Name:       "godis",
+		Name:       "hardhatkv",
 		Ext:        "log",
 		TimeFormat: "2006-01-02",
 	})
@@ -55,7 +55,7 @@ func main() {
 		config.SetupConfig(configFilename)
 	}
 	listenAddr := fmt.Sprintf("%s:%d", config.Properties.Bind, config.Properties.Port)
-	
+
 	var err error
 	if config.Properties.UseGnet {
 		var db idatabase.DB

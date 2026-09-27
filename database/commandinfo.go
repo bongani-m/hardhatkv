@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ const (
 
 func execCommand(args [][]byte) redis.Reply {
 	if len(args) == 0 {
-		return getAllGodisCommandReply()
+		return getAllCommandReply()
 	}
 	subCommand := strings.ToLower(string(args[0]))
 	if subCommand == "info" {
@@ -77,7 +77,7 @@ func getCommands(args [][]byte) redis.Reply {
 	return protocol.MakeMultiRawReply(replies)
 }
 
-func getAllGodisCommandReply() redis.Reply {
+func getAllCommandReply() redis.Reply {
 	replies := make([]redis.Reply, 0, len(cmdTable))
 	for _, v := range cmdTable {
 		replies = append(replies, v.toDescReply())

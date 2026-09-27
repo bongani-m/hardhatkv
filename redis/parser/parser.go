@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 // Payload stores redis.Reply or error

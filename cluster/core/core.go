@@ -1,14 +1,14 @@
 package core
 
 import (
-	"github.com/hdt3213/godis/cluster/raft"
-	"github.com/hdt3213/godis/config"
-	dbimpl "github.com/hdt3213/godis/database"
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/cluster/raft"
+	"github.com/bongani-m/hardhatkv/config"
+	dbimpl "github.com/bongani-m/hardhatkv/database"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 	rdbcore "github.com/hdt3213/rdb/core"
 )
 

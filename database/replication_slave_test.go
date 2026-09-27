@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hdt3213/godis/aof"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/client"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/parser"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/aof"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/client"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/parser"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 )
 
 func TestReplicationSlaveSide(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "godis")
+	tmpDir, err := ioutil.TempDir("", "hardhatkv")
 	if err != nil {
 		t.Error(err)
 		return
@@ -172,7 +172,7 @@ func TestReplicationSlaveSide(t *testing.T) {
 }
 
 func TestReplicationFailover(t *testing.T) {
-	tmpDir, err := os.MkdirTemp("", "godis")
+	tmpDir, err := os.MkdirTemp("", "hardhatkv")
 	if err != nil {
 		t.Error(err)
 		return

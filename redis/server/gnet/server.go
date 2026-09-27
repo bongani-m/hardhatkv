@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync/atomic"
 
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/parser"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/parser"
 	"github.com/panjf2000/gnet/v2"
 )
 

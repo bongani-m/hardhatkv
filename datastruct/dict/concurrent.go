@@ -1,7 +1,7 @@
 package dict
 
 import (
-	"github.com/hdt3213/godis/lib/wildcard"
+	"github.com/bongani-m/hardhatkv/lib/wildcard"
 	"math"
 	"math/rand"
 	"sort"

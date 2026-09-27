@@ -2,10 +2,10 @@ package client
 
 import (
 	"bytes"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 	"strconv"
 	"testing"
 	"time"
@@ -14,7 +14,7 @@ import (
 func TestClient(t *testing.T) {
 	logger.Setup(&logger.Settings{
 		Path:       "logs",
-		Name:       "godis",
+		Name:       "hardhatkv",
 		Ext:        ".log",
 		TimeFormat: "2006-01-02",
 	})
@@ -114,7 +114,7 @@ func TestClient(t *testing.T) {
 func TestReconnect(t *testing.T) {
 	logger.Setup(&logger.Settings{
 		Path:       "logs",
-		Name:       "godis",
+		Name:       "hardhatkv",
 		Ext:        ".log",
 		TimeFormat: "2006-01-02",
 	})

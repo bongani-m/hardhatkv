@@ -11,16 +11,16 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hdt3213/godis/cluster"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/database"
-	idatabase "github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/sync/atomic"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/parser"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/tcp"
+	"github.com/bongani-m/hardhatkv/cluster"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/database"
+	idatabase "github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/sync/atomic"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/parser"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/tcp"
 )
 
 var (

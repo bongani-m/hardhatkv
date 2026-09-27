@@ -1,10 +1,10 @@
 package database
 
 import (
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 	"strconv"
 	"testing"
 	"time"

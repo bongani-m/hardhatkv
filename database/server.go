@@ -9,17 +9,17 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/hdt3213/godis/aof"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/pubsub"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/aof"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/pubsub"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
-var godisVersion = "1.2.8" // do not modify
+var version = "1.2.8" // do not modify
 
 // Server is a redis-server with full capabilities including multiple database, rdb loader, replication
 type Server struct {
@@ -108,7 +108,7 @@ func (server *Server) Exec(c redis.Connection, cmdLine [][]byte) (result redis.R
 		}
 	}()
 	// Record the start time of command execution
-	GodisExecCommandStartUnixTime := time.Now()
+	ExecCommandStartUnixTime := time.Now()
 
 	cmdName := strings.ToLower(string(cmdLine[0]))
 	// ping
@@ -220,7 +220,7 @@ func (server *Server) Exec(c redis.Connection, cmdLine [][]byte) (result redis.R
 
 	exec := selectedDB.Exec(c, cmdLine)
 	// Record slow query logs
-	server.slogLogger.Record(GodisExecCommandStartUnixTime, cmdLine, c.Name())
+	server.slogLogger.Record(ExecCommandStartUnixTime, cmdLine, c.Name())
 	return exec
 }
 

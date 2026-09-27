@@ -4,7 +4,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/hdt3213/godis/cluster/raft"
+	"github.com/bongani-m/hardhatkv/cluster/raft"
 )
 
 func (cluster *Cluster) clusterCron() {

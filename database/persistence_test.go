@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hdt3213/godis/aof"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/aof"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 )
 
 func TestLoadRDB(t *testing.T) {

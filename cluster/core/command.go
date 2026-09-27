@@ -6,11 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 // CmdLine is alias for [][]byte, represents a command line
@@ -36,7 +36,7 @@ func (cluster *Cluster) Exec(c redis.Connection, cmdLine [][]byte) (result redis
 		}
 	}()
 	// Record the start time of command execution
-	GodisExecCommandStartUnixTime := time.Now()
+	ExecCommandStartUnixTime := time.Now()
 
 	cmdName := strings.ToLower(string(cmdLine[0]))
 	if cmdName == "auth" {
@@ -68,7 +68,7 @@ func (cluster *Cluster) Exec(c redis.Connection, cmdLine [][]byte) (result redis
 		return protocol.MakeErrReply("ERR unknown command '" + cmdName + "', or not supported in cluster mode")
 	}
 	exec := cmdFunc(cluster, c, cmdLine)
-	cluster.slogLogger.Record(GodisExecCommandStartUnixTime, cmdLine, c.Name())
+	cluster.slogLogger.Record(ExecCommandStartUnixTime, cmdLine, c.Name())
 	return exec
 
 }

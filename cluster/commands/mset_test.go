@@ -3,10 +3,10 @@ package commands
 import (
 	"testing"
 
-	"github.com/hdt3213/godis/cluster/core"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/cluster/core"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 )
 
 func TestMset(t *testing.T) {

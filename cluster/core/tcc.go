@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hdt3213/godis/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/timewheel"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/timewheel"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 // transaction info will be deleted after transactionTTL since commit

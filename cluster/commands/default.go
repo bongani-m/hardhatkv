@@ -1,6 +1,6 @@
 package commands
 
-import "github.com/hdt3213/godis/cluster/core"
+import "github.com/bongani-m/hardhatkv/cluster/core"
 
 func init() {
 	defaultCmds := []string{

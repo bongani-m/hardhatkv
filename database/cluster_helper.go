@@ -1,10 +1,10 @@
 package database
 
 import (
-	"github.com/hdt3213/godis/aof"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/redis/parser"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/aof"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/redis/parser"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 // execExistIn returns existing key in given keys

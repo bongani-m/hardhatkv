@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hdt3213/godis/cluster/raft"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/cluster/raft"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 func TestClusterBootstrap(t *testing.T) {

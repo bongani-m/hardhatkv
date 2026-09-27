@@ -8,15 +8,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hdt3213/godis/aof"
+	"github.com/bongani-m/hardhatkv/aof"
 
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/connection"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/redis/protocol/asserts"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/connection"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/redis/protocol/asserts"
 )
 
 func makeTestData(db database.DB, dbIndex int, prefix string, size int) {
@@ -98,7 +98,7 @@ func validateTestData(t *testing.T, db database.DB, dbIndex int, prefix string, 
 }
 
 func TestAof(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "godis")
+	tmpDir, err := ioutil.TempDir("", "hardhatkv")
 	if err != nil {
 		t.Error(err)
 		return
@@ -133,7 +133,7 @@ func TestAof(t *testing.T) {
 }
 
 func TestRDB(t *testing.T) {
-	tmpDir, err := ioutil.TempDir("", "godis")
+	tmpDir, err := ioutil.TempDir("", "hardhatkv")
 	if err != nil {
 		t.Error(err)
 		return

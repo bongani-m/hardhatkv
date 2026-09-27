@@ -6,12 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hdt3213/godis/aof"
-	"github.com/hdt3213/godis/datastruct/bitmap"
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/aof"
+	"github.com/bongani-m/hardhatkv/datastruct/bitmap"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 func (db *DB) getAsString(key string) ([]byte, protocol.ErrorReply) {
@@ -825,7 +825,7 @@ func execBitPos(db *DB, args [][]byte) redis.Reply {
 	return protocol.MakeIntReply(offset)
 }
 
-// GetRandomKey Randomly return (do not delete) a key from the godis
+// GetRandomKey Randomly return (do not delete) a key from HardhatKV
 func getRandomKey(db *DB, args [][]byte) redis.Reply {
 	k := db.data.RandomKeys(1)
 	if len(k) == 0 {

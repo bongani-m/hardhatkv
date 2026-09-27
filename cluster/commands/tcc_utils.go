@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"github.com/hdt3213/godis/cluster/core"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/cluster/core"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 type CmdLine = [][]byte

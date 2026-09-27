@@ -1,4 +1,4 @@
-module github.com/hdt3213/godis
+module github.com/bongani-m/hardhatkv
 
 go 1.18
 

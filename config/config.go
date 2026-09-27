@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hdt3213/godis/lib/utils"
+	"github.com/bongani-m/hardhatkv/lib/utils"
 
-	"github.com/hdt3213/godis/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/logger"
 )
 
 var (

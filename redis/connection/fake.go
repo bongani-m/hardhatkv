@@ -2,7 +2,7 @@ package connection
 
 import (
 	"fmt"
-	"github.com/hdt3213/godis/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/logger"
 	"io"
 	"sync"
 )

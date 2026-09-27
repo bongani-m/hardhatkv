@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hdt3213/godis/database"
+	"github.com/bongani-m/hardhatkv/database"
 )
 
 func TestListenAndServe(t *testing.T) {

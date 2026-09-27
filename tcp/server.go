@@ -15,8 +15,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hdt3213/godis/interface/tcp"
-	"github.com/hdt3213/godis/lib/logger"
+	"github.com/bongani-m/hardhatkv/interface/tcp"
+	"github.com/bongani-m/hardhatkv/lib/logger"
 )
 
 // Config stores tcp server properties
@@ -26,7 +26,7 @@ type Config struct {
 	Timeout    time.Duration `yaml:"timeout"`
 }
 
-// ClientCounter Record the number of clients in the current Godis server
+// ClientCounter Record the number of clients in the current HardhatKV server
 var ClientCounter int32
 
 // ListenAndServeWithSignal binds port and handle requests, blocking until receive stop signal

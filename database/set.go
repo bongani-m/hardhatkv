@@ -1,11 +1,11 @@
 package database
 
 import (
-	HashSet "github.com/hdt3213/godis/datastruct/set"
-	"github.com/hdt3213/godis/interface/database"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
+	HashSet "github.com/bongani-m/hardhatkv/datastruct/set"
+	"github.com/bongani-m/hardhatkv/interface/database"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 	"strconv"
 	"strings"
 )

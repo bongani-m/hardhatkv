@@ -2,11 +2,11 @@ package client
 
 import (
 	"errors"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/sync/wait"
-	"github.com/hdt3213/godis/redis/parser"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/sync/wait"
+	"github.com/bongani-m/hardhatkv/redis/parser"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 	"net"
 	"runtime/debug"
 	"strings"

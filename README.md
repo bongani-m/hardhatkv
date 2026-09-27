@@ -1,161 +1,133 @@
-# Godis
+# HardhatKV
 
-![license](https://img.shields.io/github/license/HDT3213/godis)
-[![Build Status](https://github.com/hdt3213/godis/actions/workflows/coverall.yml/badge.svg)](https://github.com/HDT3213/godis/actions?query=branch%3Amaster)
-[![Coverage Status](https://coveralls.io/repos/github/HDT3213/godis/badge.svg?branch=master)](https://coveralls.io/github/HDT3213/godis?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/HDT3213/godis)](https://goreportcard.com/report/github.com/HDT3213/godis)
-[![Go Reference](https://pkg.go.dev/badge/github.com/hdt3213/godis.svg)](https://pkg.go.dev/github.com/hdt3213/godis)
-<br>
-[![Mentioned in Awesome Go](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/avelino/awesome-go)
+A Redis-compatible key-value server written in Go. HardhatKV is a fork of [godis](https://github.com/HDT3213/godis).
 
-[中文版](https://github.com/hdt3213/godis/blob/master/README_CN.md)
+It listens on `0.0.0.0:6399`. Any Redis client can talk to it, including `redis-cli`.
 
-`Godis` is a golang implementation of Redis Server, which intents to provide an example of writing a high concurrent
-middleware using golang.
+## Features
 
-Key Features:
-
-- Support string, list, hash, set, sorted set, bitmap
-- Concurrent Core for better performance
+- String, list, hash, set, sorted set, and bitmap
+- Concurrent core
 - TTL
-- Publish/Subscribe
+- Publish/subscribe
 - GEO
-- AOF and AOF Rewrite
+- AOF and AOF rewrite
 - RDB read and write
-- Multi Database and `SELECT` command
-- Transaction is **Atomic** and Isolated. If any errors are encountered during execution, godis will rollback the executed commands
+- Multiple databases and `SELECT`
+- Transactions are atomic and isolated. If a command in the transaction fails, HardhatKV rolls back the commands that already ran
 - Replication
-- Server-side Cluster which is transparent to client. You can connect to any node in the cluster to access all data in the cluster.
-  - Cluster metadata management based on Raft. Support dynamic expansion, rebalancing and failover.
-  - `MSET`, `MSETNX`, `DEL`, `Rename`, `RenameNX` command is supported and atomically executed in cluster mode, allow over multi node.
-  - `MULTI` Commands Transaction is supported within slot in cluster mode
+- A server-side cluster that is transparent to the client. A connection to any node can read and write every key in the cluster
+  - Raft keeps the cluster metadata. Nodes can join, rebalance, and fail over
+  - `MSET`, `MSETNX`, `DEL`, `Rename`, and `RenameNX` run atomically in cluster mode, including when the keys live on different nodes
+  - `MULTI` transactions run inside one slot in cluster mode
 
-If you could read Chinese, you can find more details in [My Blog](https://www.cnblogs.com/Finley/category/1598973.html).
+## Get started
 
-## Get Started
-
-You can get runnable program in the releases of this repository, which supports Linux and Darwin system.
+From this directory:
 
 ```bash
-./godis-darwin
+go run .
 ```
 
+Or build a binary:
+
 ```bash
-./godis-linux
+go build -o hardhatkv .
+./hardhatkv
 ```
 
-![](https://i.loli.net/2021/05/15/oQM1yZ6pWm3AIEj.png)
+`build-darwin.sh`, `build-linux.sh`, and `build-all.sh` write platform binaries under `target/`.
 
-You could use redis-cli or other redis client to connect godis server, which listens on 0.0.0.0:6399 on default mode.
+HardhatKV reads the config path from the `CONFIG` environment variable. If that is unset, it reads `redis.conf` in the working directory. Every option is listed in [example.conf](./example.conf).
 
-![](https://i.loli.net/2021/05/15/7WquEgonzY62sZI.png)
+### Cluster mode
 
-The program will try to read config file path from environment variable `CONFIG`.
-
-If environment variable is not set, then the program try to read `redis.conf` in the working directory.
-
-Please see [example.conf](./example.conf) for all configuration information.
-
-### cluster mode
-
-We provide node1.conf and node2.conf for demonstration. use following command line to start a two-node-cluster:
+`node1.conf` and `node2.conf` start a two-node cluster:
 
 ```bash
-CONFIG=node1.conf ./godis-darwin &
-CONFIG=node2.conf ./godis-darwin &
-``` 
+CONFIG=node1.conf ./hardhatkv &
+CONFIG=node2.conf ./hardhatkv &
+```
 
-Connect to a node in the cluster to access all data in the cluster:
+Connect to either node to reach every key:
 
-```cmd
+```bash
 redis-cli -p 6399
 ```
 
-Please refer to [example.conf](./example.conf) for cluster configuration.
+Cluster options are in [example.conf](./example.conf).
 
-## Supported Commands
+## Supported commands
 
-See: [commands.md](https://github.com/HDT3213/godis/blob/master/commands.md)
+See [commands.md](./commands.md).
 
 ## Benchmark
 
 Environment:
 
-Go version：1.23
+Go version: 1.23
 System: MacOS Monterey 12.5 M2 Air
 
-Performance report by redis-benchmark: 
+`redis-benchmark` results from the upstream godis tree:
 
 ```
-PING_INLINE: 179211.45 requests per second, p50=1.031 msec                    
-PING_MBULK: 173611.12 requests per second, p50=1.071 msec                    
-SET: 158478.61 requests per second, p50=1.535 msec                    
-GET: 156985.86 requests per second, p50=1.127 msec                    
-INCR: 164473.69 requests per second, p50=1.063 msec                    
-LPUSH: 151285.92 requests per second, p50=1.079 msec                    
-RPUSH: 176678.45 requests per second, p50=1.023 msec                    
-LPOP: 177619.89 requests per second, p50=1.039 msec                    
-RPOP: 172413.80 requests per second, p50=1.039 msec                    
-SADD: 159489.64 requests per second, p50=1.047 msec                    
-HSET: 175131.36 requests per second, p50=1.031 msec                    
-SPOP: 170648.45 requests per second, p50=1.031 msec                    
-ZADD: 165289.25 requests per second, p50=1.039 msec                    
-ZPOPMIN: 185528.77 requests per second, p50=0.999 msec                    
-LPUSH (needed to benchmark LRANGE): 172117.05 requests per second, p50=1.055 msec                    
-LRANGE_100 (first 100 elements): 46511.62 requests per second, p50=4.063 msec                   
-LRANGE_300 (first 300 elements): 21217.91 requests per second, p50=9.311 msec                     
-LRANGE_500 (first 500 elements): 13331.56 requests per second, p50=14.407 msec                    
-LRANGE_600 (first 600 elements): 11153.25 requests per second, p50=17.007 msec                    
-MSET (10 keys): 88417.33 requests per second, p50=3.687 msec  
+PING_INLINE: 179211.45 requests per second, p50=1.031 msec
+PING_MBULK: 173611.12 requests per second, p50=1.071 msec
+SET: 158478.61 requests per second, p50=1.535 msec
+GET: 156985.86 requests per second, p50=1.127 msec
+INCR: 164473.69 requests per second, p50=1.063 msec
+LPUSH: 151285.92 requests per second, p50=1.079 msec
+RPUSH: 176678.45 requests per second, p50=1.023 msec
+LPOP: 177619.89 requests per second, p50=1.039 msec
+RPOP: 172413.80 requests per second, p50=1.039 msec
+SADD: 159489.64 requests per second, p50=1.047 msec
+HSET: 175131.36 requests per second, p50=1.031 msec
+SPOP: 170648.45 requests per second, p50=1.031 msec
+ZADD: 165289.25 requests per second, p50=1.039 msec
+ZPOPMIN: 185528.77 requests per second, p50=0.999 msec
+LPUSH (needed to benchmark LRANGE): 172117.05 requests per second, p50=1.055 msec
+LRANGE_100 (first 100 elements): 46511.62 requests per second, p50=4.063 msec
+LRANGE_300 (first 300 elements): 21217.91 requests per second, p50=9.311 msec
+LRANGE_500 (first 500 elements): 13331.56 requests per second, p50=14.407 msec
+LRANGE_600 (first 600 elements): 11153.25 requests per second, p50=17.007 msec
+MSET (10 keys): 88417.33 requests per second, p50=3.687 msec
 ```
 
-## Read My Code
+## Layout
 
-If you want to read my code in this repository, here is a simple guidance.
-
-- project root: only the entry point
+- project root: the process entry point
 - config: config parser
-- interface: some interface definitions
-- lib: some utils, such as logger, sync utils and wildcard
-
-I suggest focusing on the following directories:
-
-- tcp: the tcp server
-- redis: the redis protocol parser
-- datastruct: the implements of data structures
-    - dict: a concurrent hash map
-    - list: a linked list
-    - lock: it is used to lock keys to ensure thread safety
-    - set: a hash set based on map
-    - sortedset: a sorted set implements based on skiplist
-- database: the core of storage engine
-    - server.go: a standalone redis server, with multiple database
-    - database.go: data structure and base functions of single database
-    - exec.go: the gateway of database
-    - router.go: the command table
-    - keys.go: handlers for keys commands
-    - string.go: handlers for string commands
-    - list.go: handlers for list commands
-    - hash.go: handlers for hash commands
-    - set.go: handlers for set commands
-    - sortedset.go: handlers for sorted set commands
-    - pubsub.go: implements of publish / subscribe
-    - aof.go: implements of AOF persistence and rewrite
-    - geo.go: implements of geography features
-    - sys.go: authentication and other system function
-    - transaction.go: local transaction
-- cluster: 
-    - cluster.go: entrance of cluster mode
-    - com.go: communication within nodes
-    - del.go: atomic implementation of `delete` command in cluster
-    - keys.go: keys command
-    - mset.go: atomic implementation of `mset` command in cluster
-    - multi.go: entrance of distributed transaction
-    - pubsub.go: pub/sub in cluster
-    - rename.go: `rename` command in cluster 
-    - tcc.go: try-commit-catch distributed transaction implementation
+- interface: interface definitions
+- lib: logger, sync helpers, and wildcard matching
+- tcp: the TCP server
+- redis: the Redis protocol parser
+- datastruct: data structures
+  - dict: a concurrent hash map
+  - list: a linked list
+  - lock: key locks
+  - set: a hash set
+  - sortedset: a skiplist sorted set
+- database: the storage engine
+  - server.go: a standalone server with multiple databases
+  - database.go: one database
+  - exec.go: command dispatch
+  - router.go: the command table
+  - keys.go, string.go, list.go, hash.go, set.go, sortedset.go: command handlers
+  - pubsub.go: publish and subscribe
+  - aof.go: AOF persistence and rewrite
+  - geo.go: geography commands
+  - sys.go: authentication and other system commands
+  - transaction.go: local transactions
+- cluster:
+  - cluster.go: cluster mode
+  - com.go: node-to-node communication
+  - del.go, mset.go, rename.go: atomic multi-key commands
+  - keys.go: key commands
+  - multi.go: distributed transactions
+  - pubsub.go: publish and subscribe in the cluster
+  - tcc.go: try-commit-catch transactions
 - aof: AOF persistence
 
-# License
+## License
 
-This project is licensed under the [GPL license](https://github.com/hdt3213/godis/blob/master/LICENSE).
+HardhatKV is licensed under GPL-3.0. See [LICENSE](./LICENSE).

@@ -5,10 +5,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/lib/logger"
-	"github.com/hdt3213/godis/lib/utils"
-	"github.com/hdt3213/godis/redis/protocol"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/lib/logger"
+	"github.com/bongani-m/hardhatkv/lib/utils"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
 )
 
 func (persister *Persister) newRewriteHandler() *Persister {

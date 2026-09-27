@@ -24,3 +24,7 @@ logs
 *.iml
 redis2.conf
 
+
+# built server binary
+hardhatkv
+godis

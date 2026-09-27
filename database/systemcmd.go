@@ -2,10 +2,10 @@ package database
 
 import (
 	"fmt"
-	"github.com/hdt3213/godis/config"
-	"github.com/hdt3213/godis/interface/redis"
-	"github.com/hdt3213/godis/redis/protocol"
-	"github.com/hdt3213/godis/tcp"
+	"github.com/bongani-m/hardhatkv/config"
+	"github.com/bongani-m/hardhatkv/interface/redis"
+	"github.com/bongani-m/hardhatkv/redis/protocol"
+	"github.com/bongani-m/hardhatkv/tcp"
 	"os"
 	"runtime"
 	"strings"
@@ -23,27 +23,27 @@ func Ping(c redis.Connection, args [][]byte) redis.Reply {
 	}
 }
 
-// Info the information of the godis server returned by the INFO command
+// Info the information of the HardhatKV server returned by the INFO command
 func Info(db *Server, args [][]byte) redis.Reply {
 	if len(args) == 0 {
 		infoCommandList := [...]string{"server", "client", "cluster", "keyspace"}
 		var allSection []byte
 		for _, s := range infoCommandList {
-			allSection = append(allSection, GenGodisInfoString(s, db)...)
+			allSection = append(allSection, GenInfoString(s, db)...)
 		}
 		return protocol.MakeBulkReply(allSection)
 	} else if len(args) == 1 {
 		section := strings.ToLower(string(args[0]))
 		switch section {
 		case "server":
-			reply := GenGodisInfoString("server", db)
+			reply := GenInfoString("server", db)
 			return protocol.MakeBulkReply(reply)
 		case "client":
-			return protocol.MakeBulkReply(GenGodisInfoString("client", db))
+			return protocol.MakeBulkReply(GenInfoString("client", db))
 		case "cluster":
-			return protocol.MakeBulkReply(GenGodisInfoString("cluster", db))
+			return protocol.MakeBulkReply(GenInfoString("cluster", db))
 		case "keyspace":
-			return protocol.MakeBulkReply(GenGodisInfoString("keyspace", db))
+			return protocol.MakeBulkReply(GenInfoString("keyspace", db))
 		default:
 			return protocol.MakeErrReply("Invalid section for 'info' command")
 		}
@@ -79,16 +79,16 @@ func DbSize(c redis.Connection, db *Server) redis.Reply {
 	return protocol.MakeIntReply(int64(keys))
 }
 
-func GenGodisInfoString(section string, db *Server) []byte {
-	startUpTimeFromNow := getGodisRuninngTime()
+func GenInfoString(section string, db *Server) []byte {
+	startUpTimeFromNow := getRunningTime()
 	switch section {
 	case "server":
 		s := fmt.Sprintf("# Server\r\n"+
-			"godis_version:%s\r\n"+
-			//"godis_git_sha1:%s\r\n"+
-			//"godis_git_dirty:%d\r\n"+
-			//"godis_build_id:%s\r\n"+
-			"godis_mode:%s\r\n"+
+			"hardhatkv_version:%s\r\n"+
+			//"hardhatkv_git_sha1:%s\r\n"+
+			//"hardhatkv_git_dirty:%d\r\n"+
+			//"hardhatkv_build_id:%s\r\n"+
+			"hardhatkv_mode:%s\r\n"+
 			"os:%s %s\r\n"+
 			"arch_bits:%d\r\n"+
 			//"multiplexing_api:%s\r\n"+
@@ -101,11 +101,11 @@ func GenGodisInfoString(section string, db *Server) []byte {
 			//"hz:%d\r\n"+
 			//"lru_clock:%d\r\n"+
 			"config_file:%s\r\n",
-			godisVersion,
+			version,
 			//TODO,
 			//TODO,
 			//TODO,
-			getGodisRunningMode(),
+			getRunningMode(),
 			runtime.GOOS, runtime.GOARCH,
 			32<<(^uint(0)>>63),
 			//TODO,
@@ -132,7 +132,7 @@ func GenGodisInfoString(section string, db *Server) []byte {
 		)
 		return []byte(s)
 	case "cluster":
-		if getGodisRunningMode() == config.ClusterMode {
+		if getRunningMode() == config.ClusterMode {
 			s := fmt.Sprintf("# Cluster\r\n"+
 				"cluster_enabled:%s\r\n",
 				"1",
@@ -162,8 +162,8 @@ func GenGodisInfoString(section string, db *Server) []byte {
 	return []byte("")
 }
 
-// getGodisRunningMode return godis running mode
-func getGodisRunningMode() string {
+// getRunningMode return the HardhatKV running mode
+func getRunningMode() string {
 	if config.Properties.ClusterEnable {
 		return config.ClusterMode
 	} else {
@@ -171,8 +171,8 @@ func getGodisRunningMode() string {
 	}
 }
 
-// getGodisRuninngTime return the running time of godis
-func getGodisRuninngTime() time.Duration {
+// getRunningTime return the running time of HardhatKV
+func getRunningTime() time.Duration {
 	return time.Since(config.EachTimeServerInfo.StartUpTime) / time.Second
 }
 
