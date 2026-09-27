@@ -1,0 +1,60 @@
+---
+title: Getting Started
+---
+
+# Getting Started
+
+Run the server from the repository root. The module needs Go 1.18 or newer.
+
+## One process
+
+Cluster mode stays off unless the config file sets `cluster-enable yes`.
+
+```bash
+go run .
+redis-cli -p 6399 SET hello world
+redis-cli -p 6399 GET hello
+```
+
+The server listens on `0.0.0.0:6399`. With no config file, AOF is off and the keyspace lives in memory. Logs are written under `logs/`.
+
+Or build a binary:
+
+```bash
+go build -o hardhatkv .
+./hardhatkv
+```
+
+`build-darwin.sh`, `build-linux.sh`, and `build-all.sh` write platform binaries under `target/`.
+
+## A config file
+
+HardhatKV reads the config path from the `CONFIG` environment variable. If that is unset, it reads `redis.conf` in the working directory. If neither file is present, it uses the defaults above.
+
+```bash
+CONFIG=redis.conf go run .
+```
+
+Every option is listed in [Reference](/reference). The repository file `example.conf` is a commented copy of the same keys.
+
+A minimal file that turns persistence on:
+
+```
+bind 127.0.0.1
+port 6399
+dir data
+appendonly yes
+appendfilename data/appendonly.aof
+appendfsync everysec
+dbfilename data/dump.rdb
+```
+
+`dir` is where `tmp/` and, in cluster mode, `raft/` live. The process creates `dir/tmp` on startup. `appendfilename` and `dbfilename` are paths from the working directory. Put them under `dir` when those files should sit next to the Raft log.
+
+## Next steps
+
+- [Demo](/demo) starts a two-node cluster and reads a key from both ports.
+- [Replication](/replication) covers `SLAVEOF`, the AOF stream, and announce addresses.
+- [Cluster](/cluster) covers slots, joining, rebalance, and failover.
+- [Reference](/reference) lists every config key.
+- [Operations](/operations) covers shutdown, passwords, and rewrite.

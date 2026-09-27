@@ -1,0 +1,71 @@
+---
+title: Reference
+---
+
+# Configuration Reference
+
+HardhatKV reads a config file. There are no environment variables for individual options. The path comes from `CONFIG`. If `CONFIG` is unset, the process reads `redis.conf` in the working directory. If that file is also missing, it listens on `0.0.0.0:6399` with AOF off.
+
+Cluster mode stays off unless the file sets `cluster-enable yes`.
+
+Run the server from the repository root:
+
+```bash
+CONFIG=redis.conf go run .
+```
+
+Lines that start with `#` are comments. Each option is one line: the key, a space, and the value. Booleans are `yes` or `no`.
+
+## Network and process
+
+| Key | Role |
+|-----|------|
+| `bind` | Listen address. One address. Default `0.0.0.0` when no config file is loaded. |
+| `port` | Redis port. Default `6399` when no config file is loaded. |
+| `dir` | Directory for `tmp/` and, in cluster mode, `raft/`. The process creates `dir/tmp` on startup. Default `.` when the key is absent from a config file. |
+| `announce-host` | Redis host other cluster nodes dial. The port stays `port`. |
+| `databases` | Number of databases on a standalone server. Default `16`. |
+| `use-gnet` | `yes` uses the gnet listener. Default is the standard-library listener. |
+| `maxclients` | Accepted in the file. The listener does not enforce it. |
+| `requirepass` | Password required by `AUTH`. Unset means connections are open. |
+
+## Persistence
+
+| Key | Role |
+|-----|------|
+| `appendonly` | `yes` writes an AOF file and is required for replication. Default `no`. |
+| `appendfilename` | Path of the AOF file, from the working directory. Example: `data/appendonly.aof`. |
+| `appendfsync` | `always`, `everysec`, or `no`. Unset behaves as `no`. |
+| `aof-use-rdb-preamble` | `yes` writes an RDB preamble when the AOF is rewritten. |
+| `dbfilename` | Path of the RDB file, from the working directory. Example: `data/dump.rdb`. Loaded on startup when the AOF file is absent. |
+
+## Replication
+
+| Key | Role |
+|-----|------|
+| `masterauth` | Password of the master, sent by a replica when the master sets `requirepass`. |
+| `repl-timeout` | Seconds without data from the master before the replica reconnects. Default `60`. |
+| `slave-announce-ip` | Address the master dials when the replica is behind NAT. |
+| `slave-announce-port` | Port paired with `slave-announce-ip`. |
+
+`SLAVEOF` is a command, not a config key. See [Replication](/replication).
+
+## Slow log
+
+| Key | Role |
+|-----|------|
+| `slowlog-log-slower-than` | Threshold in microseconds. `0` records every command. |
+| `slowlog-max-len` | Entries kept in the log. `0` turns the log off. |
+
+## Cluster
+
+These keys apply when `cluster-enable yes`. See [Cluster](/cluster).
+
+| Key | Role |
+|-----|------|
+| `cluster-enable` | `yes` turns cluster mode on. |
+| `cluster-as-seed` | `yes` bootstraps a new group the first time `dir/raft` is empty. |
+| `cluster-seed` | Redis `host:port` of a node already in the group. This node joins it. The join request is a Redis command, so this value is the Redis port. |
+| `raft-listen-address` | Raft bind address, such as `127.0.0.1:16666`. |
+| `raft-advertise-address` | Raft address other nodes dial. Defaults to `raft-listen-address`. |
+| `master-in-cluster` | Redis `host:port` of the master this node replicates. Used when the node joins. |

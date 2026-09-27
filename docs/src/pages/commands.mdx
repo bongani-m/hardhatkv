@@ -1,0 +1,188 @@
+---
+title: Commands
+---
+
+# Commands
+
+A standalone server accepts every command in this list. A cluster node accepts the commands marked **yes** in the Cluster column, plus `PING`, `AUTH`, `INFO`, `SLOWLOG`, and `DBSIZE`. Anything else returns `ERR unknown command ... or not supported in cluster mode`.
+
+Command names are case-insensitive.
+
+## Keys
+
+| Command | Cluster |
+|---------|---------|
+| `DEL` | yes |
+| `EXPIRE` | yes |
+| `EXPIREAT` | yes |
+| `EXPIRETIME` | |
+| `PEXPIRE` | yes |
+| `PEXPIREAT` | yes |
+| `PEXPIRETIME` | |
+| `TTL` | yes |
+| `PTTL` | yes |
+| `PERSIST` | yes |
+| `EXISTS` | yes |
+| `TYPE` | yes |
+| `RENAME` | yes |
+| `RENAMENX` | yes |
+| `COPY` | |
+| `KEYS` | |
+| `SCAN` | |
+
+## Strings
+
+| Command | Cluster |
+|---------|---------|
+| `SET` | yes |
+| `SETNX` | yes |
+| `SETEX` | yes |
+| `PSETEX` | yes |
+| `MSET` | yes |
+| `MGET` | yes |
+| `MSETNX` | yes |
+| `GET` | yes |
+| `GETEX` | yes |
+| `GETSET` | yes |
+| `GETDEL` | yes |
+| `INCR` | yes |
+| `INCRBY` | yes |
+| `INCRBYFLOAT` | yes |
+| `DECR` | yes |
+| `DECRBY` | yes |
+| `STRLEN` | |
+| `APPEND` | |
+| `SETRANGE` | |
+| `GETRANGE` | |
+| `SETBIT` | |
+| `GETBIT` | |
+| `BITCOUNT` | |
+| `BITPOS` | |
+| `RANDOMKEY` | |
+
+## Lists
+
+| Command | Cluster |
+|---------|---------|
+| `LPUSH` | yes |
+| `LPUSHX` | yes |
+| `RPUSH` | yes |
+| `RPUSHX` | yes |
+| `LPOP` | yes |
+| `RPOP` | yes |
+| `RPOPLPUSH` | |
+| `LREM` | yes |
+| `LLEN` | yes |
+| `LINDEX` | yes |
+| `LSET` | yes |
+| `LRANGE` | yes |
+| `LTRIM` | |
+| `LINSERT` | |
+
+## Hashes
+
+| Command | Cluster |
+|---------|---------|
+| `HSET` | yes |
+| `HSETNX` | yes |
+| `HGET` | yes |
+| `HEXISTS` | yes |
+| `HDEL` | yes |
+| `HLEN` | yes |
+| `HSTRLEN` | yes |
+| `HMSET` | yes |
+| `HMGET` | yes |
+| `HKEYS` | yes |
+| `HVALS` | yes |
+| `HGETALL` | yes |
+| `HINCRBY` | yes |
+| `HINCRBYFLOAT` | yes |
+| `HRANDFIELD` | yes |
+| `HSCAN` | |
+
+## Sets
+
+| Command | Cluster |
+|---------|---------|
+| `SADD` | yes |
+| `SISMEMBER` | yes |
+| `SREM` | yes |
+| `SPOP` | yes |
+| `SCARD` | yes |
+| `SMEMBERS` | yes |
+| `SINTER` | yes |
+| `SINTERSTORE` | yes |
+| `SUNION` | yes |
+| `SUNIONSTORE` | yes |
+| `SDIFF` | yes |
+| `SDIFFSTORE` | yes |
+| `SRANDMEMBER` | yes |
+| `SSCAN` | |
+
+`SINTER`, `SUNION`, `SDIFF`, and the `STORE` forms are routed by the first key. See [Cluster](/cluster).
+
+## Sorted sets
+
+| Command | Cluster |
+|---------|---------|
+| `ZADD` | yes |
+| `ZSCORE` | yes |
+| `ZINCRBY` | yes |
+| `ZRANK` | yes |
+| `ZREVRANK` | yes |
+| `ZCARD` | yes |
+| `ZCOUNT` | yes |
+| `ZRANGE` | yes |
+| `ZREVRANGE` | yes |
+| `ZRANGEBYSCORE` | yes |
+| `ZREVRANGEBYSCORE` | yes |
+| `ZREM` | yes |
+| `ZREMRANGEBYSCORE` | yes |
+| `ZREMRANGEBYRANK` | yes |
+| `ZPOPMIN` | |
+| `ZLEXCOUNT` | |
+| `ZRANGEBYLEX` | |
+| `ZREVRANGEBYLEX` | |
+| `ZREMRANGEBYLEX` | |
+| `ZSCAN` | |
+
+## GEO
+
+| Command | Cluster |
+|---------|---------|
+| `GEOADD` | yes |
+| `GEOPOS` | yes |
+| `GEODIST` | yes |
+| `GEOHASH` | yes |
+| `GEORADIUS` | yes |
+| `GEORADIUSBYMEMBER` | yes |
+
+## Pub/sub, transactions, and server
+
+These run on a standalone server.
+
+| Command | Role |
+|---------|------|
+| `PUBLISH` | Send a message to a channel |
+| `SUBSCRIBE` | Listen on one or more channels |
+| `UNSUBSCRIBE` | Leave those channels |
+| `MULTI` | Start a transaction |
+| `EXEC` | Run it. A failed command rolls back the ones that already ran |
+| `DISCARD` | Drop the queued commands |
+| `WATCH` | Watch keys |
+| `SELECT` | Choose a database |
+| `FLUSHDB` | Delete the selected database |
+| `FLUSHALL` | Delete every database |
+| `SLAVEOF` | Replicate a master, or `NO ONE` to stop |
+| `BGREWRITEAOF` | Rewrite the AOF file in the background |
+| `REWRITEAOF` | Rewrite the AOF file |
+| `SAVE` | Write `dbfilename` |
+| `BGSAVE` | Write `dbfilename` in the background |
+| `INFO` | Server, client, cluster, and keyspace sections |
+| `DBSIZE` | Number of keys in the selected database |
+| `SLOWLOG` | `GET`, `LEN`, and `RESET` |
+| `AUTH` | Check `requirepass` |
+| `PING` | `PONG`, or the argument echoed back |
+| `COMMAND` | Command table |
+
+`INFO`, `DBSIZE`, `SLOWLOG`, `AUTH`, and `PING` also run in cluster mode. In cluster mode `DBSIZE` reports database 0 on the node that received the command.

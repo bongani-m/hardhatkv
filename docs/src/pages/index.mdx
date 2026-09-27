@@ -1,0 +1,30 @@
+---
+title: HardhatKV
+---
+
+import { Hero } from "../components/Hero.tsx";
+
+<Hero />
+
+## What & Why?
+
+HardhatKV is a Redis-compatible key-value server written in Go. It listens on `0.0.0.0:6399`. Any Redis client can talk to it, including `redis-cli`. A single process stores strings, lists, hashes, sets, sorted sets, and bitmaps in memory. Turn on AOF and the same process writes that data to disk and can replicate it. Set `cluster-enable yes` and the process joins a Raft group: a connection to any node can read and write every key in the cluster.
+
+**Key features:**
+
+- **Redis protocol**: Connect with a Redis client. The server speaks RESP and runs the commands listed in [Commands](/commands).
+- **In-memory types**: Strings, lists, hashes, sets, sorted sets, bitmaps, and GEO.
+- **AOF and RDB**: Append-only writes, rewrite, and an RDB file produced from that rewrite.
+- **Replication**: `SLAVEOF` copies a master. The replica applies the RDB, then follows the AOF stream.
+- **Transactions**: `MULTI` / `EXEC` on a standalone server. A failed command rolls back the commands that already ran.
+- **Server-side cluster**: Raft keeps membership and slot ownership. Clients stay on one connection. `MSET`, `MSETNX`, `MGET`, `DEL`, `RENAME`, and `RENAMENX` run across slots.
+
+## When it fits
+
+| Use | How HardhatKV helps |
+|-----|---------------------|
+| **A local Redis-compatible process** | One binary, one port, `redis-cli` |
+| **A durable copy of the keyspace** | `appendonly yes` writes every change to the AOF file |
+| **A replica** | `SLAVEOF` on a second process, with AOF enabled on the master |
+| **One keyspace across machines** | `cluster-enable yes`. Any node accepts the command and routes it |
+| **Keys that must stay together** | A `{tag}` in the key name places those keys in one slot |

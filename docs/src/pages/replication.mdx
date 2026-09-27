@@ -1,0 +1,46 @@
+---
+title: Replication
+---
+
+# Replication
+
+HardhatKV replicates from a master to one or more replicas. The master must have `appendonly yes`. The RDB sent to a replica is produced from the AOF, and the updates that follow are the AOF stream.
+
+## Start a replica
+
+On the master, persistence is on:
+
+```
+bind 127.0.0.1
+port 6399
+dir master
+appendonly yes
+appendfilename master/appendonly.aof
+appendfsync everysec
+```
+
+On the replica, point `SLAVEOF` at the master. `appendonly yes` on the replica stores the copy it receives.
+
+```bash
+redis-cli -p 6400 SLAVEOF 127.0.0.1 6399
+```
+
+`SLAVEOF NO ONE` makes that process a master again.
+
+If the master sets `requirepass`, the replica sets `masterauth` to the same password. The replica sends it before the sync.
+
+## What the master sends
+
+A new replica receives a full resync. The master writes an RDB from the current AOF and sends that file, then sends the commands appended after the RDB started. A replica that reconnects with a matching replication id and offset continues from that offset. When the offset is too old, the master sends a full resync again.
+
+The replica applies each command locally. A client connected to the replica can run read-only commands. A write from that client returns `READONLY`.
+
+## Timeouts and announce addresses
+
+`repl-timeout` is how long the replica waits without data from the master before it reconnects. The default is 60 seconds.
+
+`slave-announce-ip` and `slave-announce-port` are the address the master dials when the replica sits behind NAT. The master uses that pair instead of the address it saw on the TCP connection.
+
+## In a cluster
+
+A cluster node that sets `master-in-cluster` joins as a replica of that Redis address. After a restart, the node reads its master from the Raft log and calls `SLAVEOF` again. Failover is described in [Cluster](/cluster). A client `SLAVEOF` is a standalone command. Cluster mode does not accept it.

@@ -1,0 +1,12 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "architecture": "Architecture",
+  "replication": "Replication",
+  "cluster": "Cluster",
+  "compatibility": "Compatibility",
+  "commands": "Commands",
+  "operations": "Operations",
+  "reference": "Reference",
+  "demo": "Demo"
+}

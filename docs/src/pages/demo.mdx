@@ -1,0 +1,91 @@
+---
+title: Local Cluster Demo
+---
+
+# Local Cluster Demo
+
+This starts two HardhatKV processes on one machine, writes a key on the first port, and reads it on the second.
+
+## Prerequisites
+
+- Go 1.18 or newer
+- `redis-cli`
+
+From the repository root, build the binary:
+
+```bash
+go build -o hardhatkv .
+```
+
+## Config files
+
+Create two directories and two config files. `appendonly yes` keeps each node's keys across a restart and is what a replica would read. Each process gets its own `appendfilename`, because that path is from the working directory.
+
+`node1.conf`:
+
+```
+bind 127.0.0.1
+port 6399
+dir node1
+appendonly yes
+appendfilename node1/appendonly.aof
+appendfsync everysec
+announce-host 127.0.0.1
+cluster-enable yes
+cluster-as-seed yes
+raft-listen-address 127.0.0.1:16666
+```
+
+`node2.conf`:
+
+```
+bind 127.0.0.1
+port 6400
+dir node2
+appendonly yes
+appendfilename node2/appendonly.aof
+appendfsync everysec
+announce-host 127.0.0.1
+cluster-enable yes
+cluster-seed 127.0.0.1:6399
+raft-listen-address 127.0.0.1:16667
+```
+
+```bash
+mkdir -p node1 node2
+```
+
+## Start
+
+Start the seed first, then the node that joins it.
+
+```bash
+CONFIG=node1.conf ./hardhatkv &
+CONFIG=node2.conf ./hardhatkv &
+```
+
+`node1` bootstraps the Raft group. `node2` dials `127.0.0.1:6399` and asks to join. Raft listens on `16666` and `16667` and is not a Redis port. After the join, the leader moves slots onto `node2`.
+
+## Write on one port, read on the other
+
+```bash
+redis-cli -p 6399 SET hello world
+redis-cli -p 6400 GET hello
+```
+
+Both commands can go to either port. A key that lives on the other node is relayed, and the client still sees a normal Redis reply.
+
+Keys that share a tag stay together:
+
+```bash
+redis-cli -p 6399 MSET user:{7}:name ada user:{7}:email ada@example.com
+redis-cli -p 6400 MGET user:{7}:name user:{7}:email
+```
+
+## Stop
+
+```bash
+kill $(jobs -p)
+```
+
+`node1/` and `node2/` hold the AOF files and the Raft logs. Delete those directories before starting a new group. A `node1/raft` directory left in place ignores `cluster-as-seed` and opens the existing group.

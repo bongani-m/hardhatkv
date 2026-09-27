@@ -1,0 +1,49 @@
+---
+title: Operations
+---
+
+# Operations
+
+## Shutdown
+
+`SIGTERM` and `SIGINT` stop the listener and close the database. The AOF persister finishes its queue, and a replica closes its connection to the master. Cluster mode also closes the Raft node.
+
+## Passwords
+
+Set `requirepass` in the config file. Every connection then sends `AUTH` before any other command. A missing or wrong password returns `NOAUTH Authentication required` or `ERR invalid password`.
+
+A replica of a master that sets `requirepass` sets `masterauth` to the same value.
+
+## Persistence
+
+`appendonly yes` records each write in the file named by `appendfilename`. That path is relative to the working directory. `appendfsync` chooses when that file is synced:
+
+| Value | Behavior |
+|-------|----------|
+| `always` | `fsync` after every write |
+| `everysec` | `fsync` once a second |
+| `no` | The operating system decides |
+
+`BGREWRITEAOF` rewrites the AOF file in the background. `REWRITEAOF` rewrites it on the calling connection. Both require `appendonly yes`. When `aof-use-rdb-preamble yes`, the rewritten file starts with an RDB preamble.
+
+`SAVE` and `BGSAVE` write `dbfilename`. On the next start, that RDB is loaded when the AOF file is not already present. When the AOF file exists, startup replays the AOF and leaves the RDB unread.
+
+Replication uses the same AOF path. A master with `appendonly no` has nothing to send. See [Replication](/replication).
+
+## Slow log
+
+`slowlog-log-slower-than` is a threshold in microseconds. A command whose execution time is at least that value is recorded. The time is the execution itself. It leaves out reading the command from the client and writing the reply. A threshold of `0` records every command. `slowlog-max-len` is the number of entries kept. `0` turns the log off. `SLOWLOG RESET` clears it.
+
+## Logs
+
+The process writes a daily log file under `logs/`. The name is `hardhatkv-YYYY-MM-DD.log`.
+
+## Listener
+
+`bind` is the listen address. At most one address is read. `port` is the Redis port. `use-gnet yes` uses the gnet listener. Leave it unset to use the standard-library listener.
+
+`maxclients` is read from the config file and is not applied to the listener.
+
+## Cluster files
+
+Cluster metadata lives in `dir/raft`. Removing that directory makes the next start treat the node as new: `cluster-as-seed yes` bootstraps a new group, and `cluster-seed` sends a join. Leave the directory in place across restarts so the node comes back as the same member. Two processes started from one working directory need two `appendfilename` values, one file each.

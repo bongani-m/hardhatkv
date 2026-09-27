@@ -1,0 +1,94 @@
+---
+title: Cluster
+---
+
+# Cluster
+
+HardhatKV's cluster is server-side. A client connects to any node and uses the same commands it would use against one process. The node that receives the command looks up the slot and relays the command when another node owns that slot.
+
+Raft holds the cluster metadata: which nodes are members, which node is master of which slots, and the master/replica pairs. The keys themselves stay in each node's memory and AOF file.
+
+## Slots
+
+There are 1024 slots. The slot of a key is CRC32 of the key, modulo 1024. A key that contains `{tag}` is slotted by `tag`, so every key that shares a tag lands on the same node.
+
+```
+user:{42}:name
+user:{42}:email
+```
+
+Both keys use slot CRC32(`42`).
+
+## Start a group
+
+The seed node creates the group. `cluster-as-seed yes` bootstraps only when `dir/raft` has no state. A later start that still has that directory rejoins the group it already belongs to.
+
+`redis.conf` on the seed:
+
+```
+bind 127.0.0.1
+port 6399
+dir node1
+appendonly yes
+appendfilename node1/appendonly.aof
+announce-host 127.0.0.1
+cluster-enable yes
+cluster-as-seed yes
+raft-listen-address 127.0.0.1:16666
+```
+
+A second node joins by dialing the seed's Redis port. `cluster-seed` is a Redis address. The Raft address is separate.
+
+```
+bind 127.0.0.1
+port 6400
+dir node2
+appendonly yes
+appendfilename node2/appendonly.aof
+announce-host 127.0.0.1
+cluster-enable yes
+cluster-seed 127.0.0.1:6399
+raft-listen-address 127.0.0.1:16667
+```
+
+```bash
+CONFIG=node1.conf ./hardhatkv &
+CONFIG=node2.conf ./hardhatkv &
+redis-cli -p 6399 SET hello world
+redis-cli -p 6400 GET hello
+```
+
+After the join, both nodes persist the membership. `cluster-seed` and `cluster-as-seed` are used only while `dir/raft` is empty. A wiped `dir` with `cluster-as-seed yes` left on creates a second group.
+
+`raft-advertise-address` is the Raft address other nodes dial when this node is behind NAT. `announce-host` is the Redis host those nodes use to relay commands.
+
+## Rebalance
+
+A node that joins is added to the Raft group, and the leader moves slots until the masters hold an even share. While a slot is moving, the source records keys that change, sends the existing keys, then sends the keys that changed, and the leader updates the route when both sides have the new map.
+
+## A replica inside the cluster
+
+Set `master-in-cluster` to the Redis address of an existing master. That relationship is stored in Raft. The replica copies keys with `SLAVEOF`, so the master still needs `appendonly yes`.
+
+```
+master-in-cluster 127.0.0.1:6399
+```
+
+## Failover
+
+Masters send a heartbeat to the Raft leader. After 10 seconds without a heartbeat, and when that master has at least one replica, the leader promotes the first replica. It sends `SLAVEOF NO ONE` to the new master, then proposes the new route. The other replicas follow the new master. Raft membership stays the same. The failed master is still a member. When it returns, it becomes a replica of the node that took its slots.
+
+## Commands that cross slots
+
+A command with one key runs on the node that owns that key. These commands gather keys from every node they touch and finish them together:
+
+| Command | Behavior |
+|---------|----------|
+| `MSET`, `MSETNX` | One transaction across the nodes that own the keys |
+| `MGET` | Reads each key from the node that owns it |
+| `DEL` | Deletes on every node that owns one of the keys |
+| `RENAME`, `RENAMENX` | Moves a key from one slot to another |
+
+`MSET` and `MSETNX` use a prepare / commit / rollback exchange. A node that cannot prepare causes the other nodes to roll back.
+
+Other multi-key commands, such as `SINTER` and `EXISTS`, are routed by the first key. Put those keys in one `{tag}` when they must be read together. The full cluster command list is in [Commands](/commands).

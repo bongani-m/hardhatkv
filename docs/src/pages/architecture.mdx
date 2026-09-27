@@ -1,0 +1,39 @@
+---
+title: Architecture
+---
+
+# Architecture
+
+HardhatKV is a RESP server with an in-memory store underneath. The TCP listener reads a command, the database executes it, and the reply goes back on the same connection. Cluster mode adds a HashiCorp Raft group that owns the slot map. The client still speaks RESP to whichever node it dialed.
+
+**A standalone process:**
+
+- Listens on `bind` and `port` (default `0.0.0.0:6399`)
+- Keeps 16 databases. `SELECT` picks one. `databases` changes the count
+- Writes an AOF file when `appendonly yes`
+- Loads `dbfilename` on startup when that RDB file exists and the AOF file does not
+- Accepts `SLAVEOF` and streams updates to replicas
+- Reports `standalone` from `INFO server` as `hardhatkv_mode`
+
+**A cluster:**
+
+- `cluster-enable yes` turns cluster mode on
+- One node bootstraps with `cluster-as-seed yes` the first time `dir/raft` is empty
+- The other nodes join with `cluster-seed`, which is the Redis address of a node already in the group
+- The keyspace is split into 1024 slots. The slot is CRC32 of the key, or of the `{tag}` inside the key
+- A command for a key on another node is relayed there, and the reply is returned to the client
+- Raft stores membership and which node owns each slot. It does not store the keys
+
+```
+        redis client
+       /            \
+    :6399          :6400
+     n1             n2
+      \            /
+       Raft on :16666 / :16667
+       keys stay on the node that owns the slot
+```
+
+Each node keeps its own memory, its own AOF file, and its own Raft log under `dir/raft`. Give each node its own `appendfilename`. A node started with `master-in-cluster` copies a master's keys with the same `SLAVEOF` path a standalone replica uses.
+
+`use-gnet yes` swaps the standard-library listener for [gnet](https://github.com/panjf2000/gnet). The command path is the same.

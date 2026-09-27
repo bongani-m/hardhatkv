@@ -1,0 +1,47 @@
+---
+title: Compatibility
+---
+
+# Compatibility
+
+HardhatKV speaks the Redis protocol (RESP). Use any client that can talk to Redis: `redis-cli`, drivers, and GUI tools. The default port is `6399`.
+
+## What matches Redis
+
+| Area | Behavior |
+|------|----------|
+| Protocol | RESP on `port` (default 6399) |
+| Types | String, list, hash, set, sorted set, bitmap, GEO |
+| TTL | `EXPIRE`, `PEXPIRE`, `TTL`, `PTTL`, `PERSIST`, and the `AT` forms |
+| Databases | `SELECT` on a standalone server. The default count is 16 |
+| Auth | `requirepass` and `AUTH`. One password for every connection |
+| Pub/sub | `PUBLISH`, `SUBSCRIBE`, and `UNSUBSCRIBE` on a standalone server |
+| Transactions | `MULTI`, `EXEC`, `DISCARD`, and `WATCH` on a standalone server. A failed command rolls back |
+| Persistence | AOF with `always`, `everysec`, or `no`. `BGREWRITEAOF` rewrites the file. `SAVE` and `BGSAVE` write an RDB |
+| Replication | `SLAVEOF host port` and `SLAVEOF NO ONE` |
+| Slow log | `SLOWLOG GET`, `SLOWLOG LEN`, and `SLOWLOG RESET` |
+
+`INFO` returns the sections `server`, `client`, `cluster`, and `keyspace`. `hardhatkv_version` and `hardhatkv_mode` are in the server section. `hardhatkv_mode` is `standalone` or `cluster`.
+
+## What is cluster-specific
+
+These apply when `cluster-enable yes`. See [Cluster](/cluster).
+
+| Behavior | Detail |
+|----------|--------|
+| One connection | The client dials any node. That node relays a command to the owner of the key |
+| Slot tag | `{tag}` in a key name selects the slot |
+| Cross-slot writes | `MSET`, `MSETNX`, `DEL`, `RENAME`, and `RENAMENX` |
+| Cross-slot reads | `MGET` |
+| Replica join | `master-in-cluster` at join time |
+| Failover | The Raft leader promotes the first replica after 10 seconds without a heartbeat |
+
+## What does not follow Redis
+
+- The default port is `6399`.
+- `maxclients` is accepted in the config file and is not applied to the listener.
+- Cluster mode accepts the commands marked in [Commands](/commands). `MULTI`, `SELECT`, `PUBLISH`, `SUBSCRIBE`, `KEYS`, `SCAN`, `FLUSHDB`, `FLUSHALL`, and `SLAVEOF` are standalone commands.
+- In cluster mode, `DBSIZE` reports database 0 on the node that received the command.
+- A replica rejects writes with `READONLY`.
+- `BGREWRITEAOF` and `REWRITEAOF` require `appendonly yes`.
+- An RDB file is loaded on startup when the AOF file is missing. When the AOF file exists, startup replays the AOF.
