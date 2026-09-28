@@ -1,0 +1,8 @@
+.git
+docs
+logs
+target
+*.aof
+*.rdb
+node1
+node2
