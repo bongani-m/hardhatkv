@@ -43,7 +43,14 @@ export default {
     </>
   ),
   navigation: true,
-  footer: { text: <>GPL-3.0 {new Date().getFullYear()} © HardhatKV.</> },
+  footer: {
+    text: (
+      <>
+        GPL-3.0. Fork of{" "}
+        <a href="https://github.com/HDT3213/godis">godis</a>, modified 2026-09-27.
+      </>
+    ),
+  },
   editLink: { text: "Edit this page on GitHub" },
   unstable_faviconGlyph: "⛑",
 };

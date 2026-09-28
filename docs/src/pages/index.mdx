@@ -8,7 +8,7 @@ import { Hero } from "../components/Hero.tsx";
 
 ## What & Why?
 
-HardhatKV is a Redis-compatible key-value server written in Go. It listens on `0.0.0.0:6399`. Any Redis client can talk to it, including `redis-cli`. A single process stores strings, lists, hashes, sets, sorted sets, and bitmaps in memory. Turn on AOF and the same process writes that data to disk and can replicate it. Set `cluster-enable yes` and the process joins a Raft group: a connection to any node can read and write every key in the cluster.
+HardhatKV is a Redis-compatible key-value server written in Go. It is a fork of [godis](https://github.com/HDT3213/godis), modified on 2026-09-27, and licensed under GPL-3.0. It listens on `0.0.0.0:6399`. Any Redis client can talk to it, including `redis-cli`. A single process stores strings, lists, hashes, sets, sorted sets, and bitmaps in memory. Turn on AOF and the same process writes that data to disk and can replicate it. Set `cluster-enable yes` and the process joins a Raft group: a connection to any node can read and write every key in the cluster.
 
 **Key features:**
 

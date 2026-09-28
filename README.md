@@ -1,6 +1,6 @@
 # HardhatKV
 
-A Redis-compatible key-value server written in Go. HardhatKV is a fork of [godis](https://github.com/HDT3213/godis).
+A Redis-compatible key-value server written in Go. HardhatKV is a fork of [godis](https://github.com/HDT3213/godis). This tree was modified on 2026-09-27.
 
 The documentation site is in [`docs/`](docs/). Pushes to `master` publish it to GitHub Pages.
 
@@ -132,4 +132,4 @@ MSET (10 keys): 88417.33 requests per second, p50=3.687 msec
 
 ## License
 
-HardhatKV is licensed under GPL-3.0. See [LICENSE](./LICENSE).
+HardhatKV is licensed under GPL-3.0. See [LICENSE](./LICENSE). It is a modified version of [godis](https://github.com/HDT3213/godis), changed on 2026-09-27.
