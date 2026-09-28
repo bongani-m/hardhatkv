@@ -84,7 +84,6 @@ func NewConn(conn net.Conn) *Connection {
 	return c
 }
 
-
 // Write sends response to client over tcp connection
 func (c *Connection) Write(b []byte) (int, error) {
 	if len(b) == 0 {

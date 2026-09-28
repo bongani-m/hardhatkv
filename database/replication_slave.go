@@ -18,11 +18,11 @@ import (
 	"github.com/bongani-m/hardhatkv/config"
 	"github.com/bongani-m/hardhatkv/interface/redis"
 	"github.com/bongani-m/hardhatkv/lib/logger"
-	rdb "github.com/hdt3213/rdb/parser"
 	"github.com/bongani-m/hardhatkv/lib/utils"
 	"github.com/bongani-m/hardhatkv/redis/connection"
 	"github.com/bongani-m/hardhatkv/redis/parser"
 	"github.com/bongani-m/hardhatkv/redis/protocol"
+	rdb "github.com/hdt3213/rdb/parser"
 )
 
 const (
